@@ -2,9 +2,7 @@ const std = @import("std");
 const getline = @import("readline.zig").getline;
 const allocator = @import("std").heap.c_allocator;
 
-pub fn READ() !?[]const u8 {
-    var line = (try getline(&allocator)) orelse null;
-
+pub fn READ(line: []const u8) []const u8 {
     return line;
 }
 
@@ -19,8 +17,8 @@ pub fn PRINT(writer: anytype, output: []const u8) !void {
     );
 }
 
-pub fn rep(writer: anytype) !void {
-    var ast = try READ() orelse "";
+pub fn rep(input: []u8, writer: anytype) !void {
+    var ast = READ(input);
     var value = try EVAL(ast);
     try PRINT(writer, value);
 }
@@ -30,6 +28,9 @@ pub fn main() !void {
     const stdout = std.io.getStdOut().writer();
 
     while (true) {
-        try rep(stdout);
+        var input = (try getline(&allocator)) orelse null;
+        if (input != null) {
+            try rep(input.?, stdout);
+        }
     }
 }
