@@ -1,11 +1,9 @@
 const std = @import("std");
+const getline = @import("readline.zig").getline;
+const allocator = @import("std").heap.c_allocator;
 
-pub fn READ(reader: anytype, buffer: []u8) !?[]const u8 {
-    // https://ziglearn.org/chapter-2/#readers-and-writers
-    var line = (try reader.readUntilDelimiterOrEof(
-        buffer,
-        '\n',
-    )) orelse return null;
+pub fn READ() !?[]const u8 {
+    var line = (try getline(&allocator)) orelse null;
 
     return line;
 }
@@ -21,20 +19,17 @@ pub fn PRINT(writer: anytype, output: []const u8) !void {
     );
 }
 
-pub fn rep(reader: anytype, input_buffer: []u8, writer: anytype) !void {
-    var ast = try READ(reader, input_buffer) orelse "";
+pub fn rep(writer: anytype) !void {
+    var ast = try READ() orelse "";
     var value = try EVAL(ast);
     try PRINT(writer, value);
 }
 
 pub fn main() !void {
-    const stdin = std.io.getStdIn().reader();
+    // const stdin = std.io.getStdIn().reader();
     const stdout = std.io.getStdOut().writer();
 
-    var input_buffer: [256]u8 = undefined;
-
     while (true) {
-        try stdout.writeAll("user> ");
-        try rep(stdin, &input_buffer, stdout);
+        try rep(stdout);
     }
 }
