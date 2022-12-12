@@ -9,6 +9,7 @@ pub fn build(b: *std.build.Builder) void {
 
     const exes = [_]*LibExeObjStep{
         b.addExecutable("step0_repl", "src/step0_repl.zig"),
+        b.addExecutable("step1_read_print", "src/step1_read_print.zig"),
     };
 
     for (exes) |exe| {
